@@ -12,3 +12,9 @@ class About:
     def __call__(self, request):
         return '200 OK', render('about.html')
 
+
+# Класс-контроллер - Страница "Контакты"
+class Contacts:
+    def __call__(self, request):
+        return '200 OK', render('contacts.html')
+
