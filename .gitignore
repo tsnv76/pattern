@@ -3,3 +3,9 @@ __pycache__
 /framework/
 ../.idea/
 
+
+
+/ex.py
+/urls.py
+/views.py
+/framework/
