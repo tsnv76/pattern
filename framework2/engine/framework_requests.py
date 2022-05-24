@@ -3,16 +3,15 @@ class GetRequests:
 
     @staticmethod
     def parse_input_data(data: str):
-        query_param = {}
+        result = {}
         if data:
-            data = data.split('&')
-            for item in data:
+            # Делим параметры через &
+            params = data.split('&')
+            for item in params:
+                # Делим ключ и значение через =
                 k, v = item.split('=')
-                if query_param.get(k):
-                    query_param[k].append(v)
-                else:
-                    query_param[k] = [v]
-        return query_param
+                result[k] = v
+        return result
 
     @staticmethod
     def get_request_params(environ):
@@ -28,16 +27,15 @@ class PostRequests:
 
     @staticmethod
     def parse_input_data(data: str):
-        query_param = {}
+        result = {}
         if data:
-            data = data.split('&')
-            for item in data:
+            # Делим параметры через &
+            params = data.split('&')
+            for item in params:
+                # Делим ключ и значение через =
                 k, v = item.split('=')
-                if query_param.get(k):
-                    query_param[k].append(v)
-                else:
-                    query_param[k] = [v]
-        return query_param
+                result[k] = v
+        return result
 
     @staticmethod
     def get_wsgi_input_data(env) -> bytes:
