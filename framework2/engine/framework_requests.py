@@ -1,4 +1,6 @@
 # Обработка GET-запроса с параметрами
+
+
 class GetRequests:
 
     @staticmethod
