@@ -1,6 +1,10 @@
 import quopri
 from engine.framework_requests import GetRequests, PostRequests
+from logging import getLogger
 
+
+# Инициализация клиентского логера
+LOGGER = getLogger('framework')
 
 class PageNotFound404:
     def __call__(self, request):
@@ -31,10 +35,12 @@ class Framework:
             data = PostRequests().get_request_params(environ)
             request['data'] = data
             print(f'Нам пришёл post-запрос: {Framework.decode_value(data)}')
+            LOGGER.info(f'Нам пришёл post-запрос: {Framework.decode_value(data)}')
         if method == 'GET':
             request_params = GetRequests().get_request_params(environ)
             request['request_params'] = request_params
             print(f'Нам пришли GET-параметры: {request_params}')
+            LOGGER.info(f'Нам пришли GET-параметры: {request_params}')
 
         # Находим нужный контроллер
         if path in self.routes_lst:
