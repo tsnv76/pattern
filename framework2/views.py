@@ -1,49 +1,55 @@
 from datetime import date
 from logging import getLogger
 
-from decors import log
+from decors import Logger, debug, AppRoute
+from engine.main import DebugApplication
 from engine.templator import render
 from components.models import Engine
 
 site = Engine()
 
 
-# Инициализация клиентского логера
+# Инициализация логера
 LOGGER = getLogger('framework')
+routes = {}
 
 
 # Класс-контроллер - Главная страница
+@AppRoute(routes=routes, url='/')
 class Index:
-    @log
+    @debug
     def __call__(self, request):
         return '200 OK', render('index.html', objects_list=site.categories)
 
 
 # Класс-контроллер - Страница "О проекте"
+@AppRoute(routes=routes, url='/about/')
 class About:
-    @log
+    @debug
     def __call__(self, request):
         return '200 OK', render('about.html')
 
 
 # Класс-контроллер - Страница "Расписания"
+@AppRoute(routes=routes, url='/study_programs/')
 class StudyPrograms:
-    @log
+    @debug
     def __call__(self, request):
         return '200 OK', render('study-programs.html', data=date.today())
 
 
 # Класс-контроллер - Страница 404
 class NotFound404:
-    @log
+    @debug
     def __call__(self, request):
         LOGGER.error(f'Ошибка 404. Страница не найдена')
         return '404 WHAT', '404 PAGE Not Found'
 
 
 # Класс-контроллер - Страница "Список курсов"
+@AppRoute(routes=routes, url='/courses-list/')
 class CoursesList:
-    @log
+    @debug
     def __call__(self, request):
 
         try:
@@ -60,10 +66,11 @@ class CoursesList:
 
 
 # Класс-контроллер - Страница "Создать курс"
+@AppRoute(routes=routes, url='/create-course/')
 class CreateCourse:
     category_id = -1
 
-    @log
+    @debug
     def __call__(self, request):
         if request['method'] == 'POST':
 
@@ -100,8 +107,9 @@ class CreateCourse:
 
 
 # Класс-контроллер - Страница "Создать категорию"
+@AppRoute(routes=routes, url='/create-category/')
 class CreateCategory:
-    @log
+    @debug
     def __call__(self, request):
 
         if request['method'] == 'POST':
@@ -132,8 +140,9 @@ class CreateCategory:
 
 
 # Класс-контроллер - Страница "Список категорий"
+@AppRoute(routes=routes, url='/category-list/')
 class CategoryList:
-    @log
+    @debug
     def __call__(self, request):
         return '200 OK', render('category_list.html',
                                 objects_list=site.categories)
