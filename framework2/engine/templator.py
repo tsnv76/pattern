@@ -1,7 +1,7 @@
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 
-from decors import log
+from components.decors import log
 
 
 @log
