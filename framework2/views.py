@@ -1,25 +1,25 @@
-import os
 from datetime import date
 from logging import getLogger
 
 from components.cbv import ListView, CreateView
-from components.decors import Logger, debug, AppRoute
-from engine.framework_requests import GetRequests
-from engine.main import Framework
+from components.decors import Logger, debug, AppRoute, log
 from engine.templator import render
-from components.models import Engine
+from components.models import Engine, MapperRegistry
+from components.unit_of_work import UnitOfWork
 
 site = Engine()
 
 # Инициализация логера
 LOGGER = getLogger('framework')
-routes = {}
 
+
+routes = {}
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 # Класс-контроллер - Главная страница
 @AppRoute(routes=routes, url='/')
 class Index:
-    @debug
     def __call__(self, request):
         return '200 OK', render('index.html', objects_list=site.categories)
 
@@ -27,7 +27,6 @@ class Index:
 # Класс-контроллер - Страница "О проекте"
 @AppRoute(routes=routes, url='/about/')
 class About:
-    @debug
     def __call__(self, request):
         return '200 OK', render('about.html')
 
@@ -35,24 +34,20 @@ class About:
 # Класс-контроллер - Страница "Расписания"
 @AppRoute(routes=routes, url='/study_programs/')
 class StudyPrograms:
-    @debug
     def __call__(self, request):
         return '200 OK', render('study-programs.html', data=date.today())
 
 
 # Класс-контроллер - Страница 404
 class NotFound404:
-    @debug
     def __call__(self, request):
-        LOGGER.error(f'Ошибка 404. Страница не найдена')
         return '404 WHAT', '404 PAGE Not Found'
 
 
 # Класс-контроллер - Страница "Список курсов"
+@AppRoute(routes=routes, url='/courses-list/')
 class CoursesList:
-    @debug
     def __call__(self, request):
-
         try:
             category = site.find_category_by_id(
                 int(request['request_params']['id']))
@@ -61,7 +56,6 @@ class CoursesList:
                                     name=category.name,
                                     id=category.id)
         except KeyError:
-            LOGGER.error(f'Курсы еще не добавлены')
             return '200 OK', 'No courses have been added yet'
 
 
@@ -70,10 +64,9 @@ class CoursesList:
 class CreateCourse:
     category_id = -1
 
-    @debug
     def __call__(self, request):
         if request['method'] == 'POST':
-
+            # метод пост
             data = request['data']
 
             name = data['name']
@@ -84,8 +77,8 @@ class CreateCourse:
                 category = site.find_category_by_id(int(self.category_id))
 
                 course = site.create_course('record', name, category)
-                site.courses.append(course)
                 LOGGER.info(f'Добавлен курс {name}')
+                site.courses.append(course)
 
             return '200 OK', render('course_list.html',
                                     objects_list=category.courses,
@@ -95,27 +88,46 @@ class CreateCourse:
         else:
             try:
                 self.category_id = int(request['request_params']['id'])
-                category = site.find_category_by_id(int(self.category_id))
+                category = site.find_category_by_id(
+                    int(self.category_id))
 
                 return '200 OK', render('create_course.html',
                                         name=category.name,
                                         id=category.id)
             except KeyError:
-                LOGGER.error(f'Категория еще не добавлена')
                 return '200 OK', 'No categories have been added yet'
 
 
 # Класс-контроллер - Страница "Создать категорию"
 @AppRoute(routes=routes, url='/create-category/')
-class CategoryCreateView(CreateView):
-    template_name = 'create_category.html'
+class CreateCategory:
 
-    def create_obj(self, data: dict):
-        name = data['name']
-        name = site.decode_value(name)
-        new_obj = site.create_category(name)
-        site.categories.append(new_obj)
-        LOGGER.info(f'Добавлена категория {name}')
+    def __call__(self, request):
+
+        if request['method'] == 'POST':
+            # метод пост
+            print(request)
+            data = request['data']
+
+            name = data['name']
+            name = site.decode_value(name)
+
+            category_id = data.get('category_id')
+
+            category = None
+            if category_id:
+                category = site.find_category_by_id(int(category_id))
+
+            new_category = site.create_category(name, category)
+            LOGGER.info(f'Добавлена категория {name}')
+            site.categories.append(new_category)
+
+            return '200 OK', render('index.html',
+                                    objects_list=site.categories)
+        else:
+            categories = site.categories
+            return '200 OK', render('create_category.html',
+                                    categories=categories)
 
 
 # Класс-контроллер - Страница "Список категорий"
@@ -125,27 +137,30 @@ class CategoryListView(ListView):
     template_name = 'category_list.html'
 
 
-# Класс-контроллер - Страница "Список студентов"
 @AppRoute(routes=routes, url='/student-list/')
 class StudentListView(ListView):
-    queryset = site.students
     template_name = 'student_list.html'
 
+    def get_queryset(self):
+        mapper = MapperRegistry.get_current_mapper('student')
+        return mapper.all()
 
-# Класс-контроллер - Страница "Создать студента"
+
 @AppRoute(routes=routes, url='/create-student/')
 class StudentCreateView(CreateView):
     template_name = 'create_student.html'
 
+    @log
     def create_obj(self, data: dict):
         name = data['name']
         name = site.decode_value(name)
         new_obj = site.create_user('student', name)
         site.students.append(new_obj)
+        new_obj.mark_new()
         LOGGER.info(f'Добавлен студент {name}')
+        UnitOfWork.get_current().commit()
 
 
-# Класс-контроллер - Страница "Добавить студента на курс"
 @AppRoute(routes=routes, url='/add-student/')
 class AddStudentByCourseCreateView(CreateView):
     template_name = 'add_student.html'
@@ -156,6 +171,7 @@ class AddStudentByCourseCreateView(CreateView):
         context['students'] = site.students
         return context
 
+    @log
     def create_obj(self, data: dict):
         course_name = data['course_name']
         course_name = site.decode_value(course_name)
@@ -163,5 +179,10 @@ class AddStudentByCourseCreateView(CreateView):
         student_name = data['student_name']
         student_name = site.decode_value(student_name)
         student = site.get_student(student_name)
+        LOGGER.info(f'Добавлен студент {student_name} на курс {course_name}')
         course.add_student(student)
-        LOGGER.info(f'Студент {student_name} записан на курс {course_name}')
+
+
+
+
+
