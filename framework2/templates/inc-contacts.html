@@ -1,0 +1,23 @@
+<form action="" method="post">
+            <fieldset>
+                <legend>Задайте вопрос</legend>
+                <p>
+                    <label class="title" for="name">Ваше имя</label>
+                        <input type="text" name="name" id="name"><br />
+                    <label class="title" for="email">Ваш емайл:</label>
+                        <input type="text" name="email" id="email">
+                </p>
+                <p>
+                    <label for="question" class="title">Раздел</label>
+                    <select name="question" id="question">
+                        <option value="prod">Вопрос по продукции</option>
+                        <option value="vacancy">Вакансии</option>
+                        <option value="other">Общие вопросы</option>
+                    </select>
+                </p>
+                <p>
+                    <textarea name="mess" id="mess" placeholder="Введите ваше сообщение"></textarea>
+                </p>
+            </fieldset>
+            <div class="submit"><input type="submit" value="Отправить"></div>
+        </form>

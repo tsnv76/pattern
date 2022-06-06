@@ -1,7 +1,10 @@
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 
+from components.decors import log
 
+
+@log
 def render(template_name, folder='templates', **kwargs):
     """
     Минимальный пример работы с шаблонизатором
