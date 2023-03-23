@@ -1,42 +1,56 @@
 <div class="content">
-    <h1></h1>
-    <p></p>
-
-</div>
-<table>
+    <h1>Программы обучения</h1>
+    <p>Курсы в течение года.</p>
+    <p>Расписание действует на: {{data}} <b>(*дата подставляется шаблоном)</b></p>
+    <table>
         <tr class="head">
-            <th>Фамилия</th>
-            <th>Имя</th>
-            <th>Отчество</th>
-            <th>Специальность</th>
-            <th>Дата подачи документов</th>
+            <th></th>
+            <th>Барнаул</th>
+            <th>Новосибирск</th>
+            <th>Горно-Алтайск</th>
         </tr>
         <tr>
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Наладчик компьютерных сетей</td>
-            <td>1 июля 2021</td>
+            <th>Основы Python</th>
+            <td>Пн, 20 июня 2022<br />11:00 - 14:00</td>
+            <td>Ср, 6 июля 2022<br />11:00 - 14:00</td>
+            <td>Ср, 20 июля 2022<br />11:00 - 14:00</td>
         </tr>
         <tr class="even">
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Наладчик компьютерных сетей</td>
-            <td>1 июля 2021</td>
+            <th>Программируем на C++</th>
+            <td>Пт, 10 июня 2022<br />11:00 - 13:00</td>
+            <td>Пт, 1 июля 2022<br />11:00 - 13:00</td>
+            <td>Пн, 8 августа 2022<br />11:00 - 13:00</td>
         </tr>
         <tr>
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Наладчик компьютерных сетей</td>
-            <td>1 июля 2021</td>
+            <th>Основы Java</th>
+            <td>Пн, 27 июня 2022<br />11:00 - 14:00</td>
+            <td>Ср, 13 июля 2022<br />11:00 - 14:00</td>
+            <td>Пт, 29 июля 2022<br />11:00 - 14:00</td>
         </tr>
         <tr class="even">
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Наладчик компьютерных сетей</td>
-            <td>1 июля 2021</td>
+            <th>Основы JS</th>
+            <td>Пн, 28 августа 2022<br />11:00 - 16:00</td>
+            <td>Ср, 14 сентября 2022<br />11:00 - 16:00</td>
+            <td>Пн, 3 октября 2022<br />11:00 - 16:00</td>
         </tr>
     </table>
+    <form action="" method="post">
+        <fieldset>
+            <legend>Зарегистрируйтесь</legend>
+            <p><label class="title" for="name">Ваше имя:</label>
+                 <input type="text" name="name" id="name"><br />
+                 <label class="title" for="email">Ваш email:</label>
+                 <input type="text" name="email" id="email"></p>
+            <p><label for="location" class="title">Ближайший центр:</label>
+                 <select name="location" id="location">
+                     <option value="brn">Барнаул</option>
+                     <option value="nsk">Новосибирск</option>
+                     <option value="ga">Горно-Алтайск</option>
+                 </select></p>
+            <span class="title">Являетесь участником?</span>
+            <label><input type="radio" name="member" value="yes" /> Да</label>
+            <label><input type="radio" name="member" value="no" /> Нет</label></p>
+        </fieldset>
+    <div class="submit"><input type="submit" value="Регистрация" /></div>
+    </form>
+</div>

@@ -1,4 +1,6 @@
 # Обработка GET-запроса с параметрами
+
+
 class GetRequests:
 
     @staticmethod
@@ -62,4 +64,3 @@ class PostRequests:
         # Превращаем данные в словарь
         data = self.parse_wsgi_input_data(data)
         return data
-
