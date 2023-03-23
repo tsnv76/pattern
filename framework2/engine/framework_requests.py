@@ -1,7 +1,4 @@
 # Обработка GET-запроса с параметрами
-from decors import log
-
-
 class GetRequests:
 
     @staticmethod
