@@ -1,22 +1,22 @@
 import quopri
 
 
-# Абстрактный Пользователь
+# Класс-Абстрактный пользователь
 class User:
     pass
 
 
-# Класс - Преподаватель
+# Класс-Преподаватель
 class Teacher(User):
     pass
 
 
-# Класс - Студент
+# Класс-Студент
 class Student(User):
     pass
 
 
-# Класс - фабрика пользователей
+# Класс-Фабрика пользователей
 class UserFactory:
     types = {
         'student': Student,
@@ -28,7 +28,7 @@ class UserFactory:
         return cls.types[type_]()
 
 
-# Класс - курс
+# Класс-Курс
 class Course:
 
     def __init__(self, name, category):
@@ -37,17 +37,17 @@ class Course:
         self.category.courses.append(self)
 
 
-# Класс - Интерактивный курс
+# Класс-Интерактивный курс
 class InteractiveCourse(Course):
     pass
 
 
-# Класс - Курс в записи
+# Класс-Курс в записи
 class RecordCourse(Course):
     pass
 
 
-# Класс - Фабрика курсов
+# Класс-Фабрика курсов
 class CourseFactory:
     types = {
         'interactive': InteractiveCourse,
@@ -59,7 +59,7 @@ class CourseFactory:
         return cls.types[type_](name, category)
 
 
-# Класс - категория
+# Класс-Категория
 class Category:
 
     auto_id = 0
@@ -74,11 +74,11 @@ class Category:
     def course_count(self):
         result = len(self.courses)
         if self.category:
-            result += self.category.courses_count()
+            result += self.category.course_count()
         return result
 
 
-# Класс - Основной интерфейс проекта
+# Класс-Основной интерфейс проекта
 class Engine:
     def __init__(self):
         self.teachers = []
@@ -116,5 +116,3 @@ class Engine:
         val_b = bytes(val.replace('%', '=').replace("+", " "), 'UTF-8')
         val_decode_str = quopri.decodestring(val_b)
         return val_decode_str.decode('UTF-8')
-
-

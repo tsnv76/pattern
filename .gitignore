@@ -9,3 +9,4 @@ __pycache__
 /urls.py
 /views.py
 /framework/
+/example/
