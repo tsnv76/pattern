@@ -3,13 +3,13 @@ from engine.framework_requests import GetRequests, PostRequests
 
 
 class PageNotFound404:
-    def __call__(self):
-        return '404 WHAT', '404 PAGE NOT Found'
+    def __call__(self, request):
+        return '404 WHAT', '404 PAGE Not Found'
 
 
 class Framework:
 
-    """ Класс Framework - основа WSGI-фреймворка"""
+    """Класс Framework - основа WSGI-фреймворка"""
 
     def __init__(self, routes_obj):
         self.routes_lst = routes_obj
@@ -18,7 +18,7 @@ class Framework:
         # Получаем адрес, по которому пользователь выполнил переход
         path = environ['PATH_INFO']
 
-        # Добавляем закрывающий слэш
+        # Добавляем закрывающий слеш
         if not path.endswith('/'):
             path = f'{path}/'
 
@@ -30,7 +30,7 @@ class Framework:
         if method == 'POST':
             data = PostRequests().get_request_params(environ)
             request['data'] = data
-            print(f'Нам пришел post-запрос: {Framework.decode_value(data)}')
+            print(f'Нам пришёл post-запрос: {Framework.decode_value(data)}')
         if method == 'GET':
             request_params = GetRequests().get_request_params(environ)
             request['request_params'] = request_params
@@ -55,4 +55,3 @@ class Framework:
             val_decode_str = quopri.decodestring(val).decode('UTF-8')
             new_data[k] = val_decode_str
         return new_data
-
